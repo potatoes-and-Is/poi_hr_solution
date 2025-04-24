@@ -1,0 +1,20 @@
+# 환경설정 파일
+src/main/resources/application.yml
+
+# 빌드 결과물
+build/
+.gradle/
+
+# IDE 설정
+.idea/d
+*.iml
+
+# 로그 파일
+*.log
+
+# OS 관련 파일
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
