@@ -3,6 +3,9 @@ package com.poi.hr.dto;
 
 import com.poi.hr.domain.common.Role;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LoginEmployeeDto {
 
     private String employeeNumber;
@@ -16,6 +19,13 @@ public class LoginEmployeeDto {
         this.employeeNumber = employeeNumber;
         this.password = password;
         this.employeeRole = role;
+    }
+
+    public List<String> getRoles() {
+        if (this.employeeRole.getRole().length() > 0) {
+            return List.of(this.employeeRole.getRole());
+        }
+        return new ArrayList<>();
     }
 
     public String getEmployeeNumber() {

@@ -6,6 +6,7 @@ import com.poi.hr.domain.login.entity.DepPositionEmployee;
 import com.poi.hr.domain.login.entity.Employee;
 import com.poi.hr.dto.LoginEmployeeDto;
 import com.poi.hr.repository.EmployeeRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,11 +15,11 @@ import java.util.Optional;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    //private final PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {//, PasswordEncoder encoder) {
+    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder encoder) {
         this.employeeRepository = employeeRepository;
-        //this.encoder = encoder;
+        this.encoder = encoder;
     }
 
     //    @Transactional
@@ -45,6 +46,24 @@ public class EmployeeService {
 
     public LoginEmployeeDto findById(int id) {
         Optional<Employee> employee = employeeRepository.findById(id);
+
+        return employee.map(u -> {
+            Role role = null;
+            for (DepPositionEmployee dpe : u.getDepPositionEmployees()) {
+                role = dpe.getTeamPosition().getRole();
+                break; // 첫 번째만 가져온다고 가정
+            }
+
+            return new LoginEmployeeDto(
+                    u.getEmployeeNumber(),
+                    u.getPassword(),
+                    role
+            );
+        }).orElse(null);
+    }
+
+    public LoginEmployeeDto findByUsername(String username) {
+        Optional<Employee> employee = employeeRepository.findByEmployeeNumber(username);
 
         return employee.map(u -> {
             Role role = null;
